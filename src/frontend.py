@@ -3,7 +3,7 @@ import httpx
 import streamlit.components.v1 as components
 import html
 import re
-
+from auth import app as auth_app
 API_URL = "http://127.0.0.1:8000/chat"
 
 
@@ -14,6 +14,9 @@ def init_session_states():
     if "message_history" not in st.session_state:
         st.session_state.message_history = []
 
+    if "authenticated" not in st.session_state:
+        st.session_state.authenticated = False
+
 
 def display_chat_messages():
     for message in st.session_state.messages:
@@ -21,20 +24,12 @@ def display_chat_messages():
             st.markdown(message["content"])
 
 def remove_emojis(text: str) -> str:
+    # Remove all Emoji, Symbols, and Decorations in one line
     emoji_pattern = re.compile(
-        "["
-        "\U0001F600-\U0001F64F"  # emoticons
-        "\U0001F300-\U0001F5FF"  # symbols & pictographs
-        "\U0001F680-\U0001F6FF"  # transport & map symbols
-        "\U0001F1E0-\U0001F1FF"  # flags
-        "\U00002702-\U000027B0"  # dingbats
-        "\U000024C2-\U0001F251"
-        "]+",
-        flags=re.UNICODE,
+        r"[\U0001F000-\U0001FFFF\U00002700-\U000027FF\u2600-\u26FF\u2700-\u27BF]"
     )
     cleaned_text = emoji_pattern.sub("", text)
-    cleaned_text = re.sub(r"\s+", " ", cleaned_text).strip()
-    return cleaned_text            
+    return re.sub(r"\s+", " ", cleaned_text).strip()       
 
 def speak_text(text: str):
     cleaned_text = remove_emojis(text)
@@ -72,7 +67,7 @@ def speak_text(text: str):
     )
 
 def handle_user_input():
-    if prompt := st.chat_input("Talk to the JokeBot"):
+    if prompt := st.chat_input("Talk to the Bot"):
         st.session_state.messages.append({"role": "user", "content": prompt})
 
         with st.chat_message("user"):
@@ -96,7 +91,7 @@ def handle_user_input():
         except httpx.HTTPError as e:
             bot_response = f"Backend error: {e}"
 
-        display_response = f"Ro Båt: {bot_response}"
+        display_response = f"TheraBåt: {bot_response}"
 
         with st.chat_message("assistant"):
             st.markdown(display_response)
@@ -108,8 +103,22 @@ def handle_user_input():
 
 
 def layout():
-    st.markdown("# Chat with Ro Båt")
-    st.write("RO BÅT is a funny robot that will answer with a programming joke.")
+    if not st.session_state.authenticated:
+        auth_app()
+        st.stop()
+
+    st.markdown("# Chat with TheraBåt")
+    st.write("TheraBåt is a friendly AI chatbot that can help with general conversation and questions.")
+
+    if st.button("Logout"):
+        st.session_state.authenticated = False
+        st.session_state.signout = False
+        st.session_state.signedout = False
+        st.session_state.username = ""
+        st.session_state.useremail = ""
+        st.session_state.messages = []
+        st.session_state.message_history = []
+        st.rerun()
 
     display_chat_messages()
     handle_user_input()
