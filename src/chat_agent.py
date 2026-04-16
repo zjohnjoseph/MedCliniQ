@@ -9,7 +9,7 @@ load_dotenv()
 chat_agent = Agent(
     MODEL_SMALL,
     system_prompt=(
-        "You are Therabot, a friendly and helpful AI chatbot. "
+        "You are Chatbot, a friendly and helpful AI chatbot. "
         "Answer user questions clearly and naturally. "
         "Only use very basic emojis occasionally, such as 🙂, 😊, or 👍. "
         "Do not use excessive, flashy, or unusual emojis. "

@@ -12,7 +12,7 @@ cred = credentials.Certificate("src\\chatbot-auth-76288-e79bafae551e.json")
 # firebase_admin.initialize_app(cred)
 def app():
 # Usernm = []
-    st.title('Welcome to :violet[TheraBåt]')
+    st.title('Welcome to :violet[Chatbot]')
 
     if "authenticated" not in st.session_state:
         st.session_state.authenticated = False
