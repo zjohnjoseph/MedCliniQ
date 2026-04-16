@@ -22,6 +22,25 @@ def app():
         st.session_state.useremail = ''
 
 
+    # def sign_up_with_email_and_password(email, password, username=None, return_secure_token=True):
+    #     try:
+    #         rest_api_url = "https://identitytoolkit.googleapis.com/v1/accounts:signUp"
+    #         payload = {
+    #             "email": email,
+    #             "password": password,
+    #             "returnSecureToken": return_secure_token
+    #         }
+    #         if username:
+    #             payload["displayName"] = username 
+    #         payload = json.dumps(payload)
+    #         r = requests.post(rest_api_url, params={"key": "AIzaSyApr-etDzcGcsVcmaw7R7rPxx3A09as7uw"}, data=payload)
+    #         try:
+    #             return r.json()['email']
+    #         except:
+    #             st.warning(r.json())
+    #     except Exception as e:
+    #         st.warning(f'Signup failed: {e}')
+
     def sign_up_with_email_and_password(email, password, username=None, return_secure_token=True):
         try:
             rest_api_url = "https://identitytoolkit.googleapis.com/v1/accounts:signUp"
@@ -29,17 +48,29 @@ def app():
                 "email": email,
                 "password": password,
                 "returnSecureToken": return_secure_token
-            }
+                }
+
             if username:
-                payload["displayName"] = username 
-            payload = json.dumps(payload)
-            r = requests.post(rest_api_url, params={"key": "AIzaSyApr-etDzcGcsVcmaw7R7rPxx3A09as7uw"}, data=payload)
-            try:
-                return r.json()['email']
-            except:
-                st.warning(r.json())
+                payload["displayName"] = username
+
+            r = requests.post(
+                rest_api_url,
+                params={"key": "REMOVED"},
+                json=payload
+            )
+
+            data = r.json()
+            # st.write("Signup response:", data)
+
+            if r.status_code == 200:
+                return data.get("email")
+            else:
+                st.error(data.get("error", {}).get("message", "Signup failed"))
+                return None
+
         except Exception as e:
-            st.warning(f'Signup failed: {e}')
+            st.error(f"Signup failed: {e}")
+            return None
 
     def sign_in_with_email_and_password(email=None, password=None, return_secure_token=True):
         rest_api_url = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
@@ -53,8 +84,8 @@ def app():
             if password:
                 payload["password"] = password
             payload = json.dumps(payload)
-            print('payload sigin',payload)
-            r = requests.post(rest_api_url, params={"key": "AIzaSyApr-etDzcGcsVcmaw7R7rPxx3A09as7uw"}, data=payload)
+            # print('payload sigin',payload)
+            r = requests.post(rest_api_url, params={"key": "REMOVED"}, data=payload)
             try:
                 data = r.json()
                 user_info = {
@@ -75,7 +106,7 @@ def app():
                 "requestType": "PASSWORD_RESET"
             }
             payload = json.dumps(payload)
-            r = requests.post(rest_api_url, params={"key": "AIzaSyApr-etDzcGcsVcmaw7R7rPxx3A09as7uw"}, data=payload)
+            r = requests.post(rest_api_url, params={"key": "REMOVED"}, data=payload)
             if r.status_code == 200:
                 return True, "Reset email Sent"
             else:
@@ -158,9 +189,12 @@ def app():
                 # user = auth.create_user(email = email, password = password,uid=username)
                 user = sign_up_with_email_and_password(email=email,password=password,username=username)
                 
-                st.success('Account created successfully!')
-                st.markdown('Please Login using your email and password')
-                st.balloons()
+                if user:
+                    st.success('Account created successfully!')
+                    st.markdown('Please login using your email and password.')
+                    st.balloons()
+                else:
+                    st.warning('Account was not created.')
         else:
             # st.button('Login', on_click=f)          
             st.button('Login', on_click=f)

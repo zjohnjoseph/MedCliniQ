@@ -67,7 +67,7 @@ def speak_text(text: str):
     )
 
 def handle_user_input():
-    if prompt := st.chat_input("Talk to the Bot"):
+    if prompt := st.chat_input("Hi, how can I help you?"):
         st.session_state.messages.append({"role": "user", "content": prompt})
 
         with st.chat_message("user"):
@@ -86,12 +86,12 @@ def handle_user_input():
             api_data = api_response.json()
 
             st.session_state.message_history = api_data.get("message_history", [])
-            bot_response = api_data.get("response", "Oops, I could not think of a joke.")
+            bot_response = api_data.get("response", "Sorry, I could not generate a response.")
 
         except httpx.HTTPError as e:
             bot_response = f"Backend error: {e}"
 
-        display_response = f"TheraBåt: {bot_response}"
+        display_response = f"Chatbot: {bot_response}"
 
         with st.chat_message("assistant"):
             st.markdown(display_response)
@@ -101,24 +101,36 @@ def handle_user_input():
             {"role": "assistant", "content": display_response}
         )
 
+def clear_chat():
+    st.session_state.messages = []
+    st.session_state.message_history = []
+    st.rerun()
+
 
 def layout():
     if not st.session_state.authenticated:
         auth_app()
         st.stop()
 
-    st.markdown("# Chat with TheraBåt")
-    st.write("TheraBåt is a friendly AI chatbot that can help with general conversation and questions.")
+    st.markdown("# Chat with :violet[Chatbot]")
+    st.write("Chatbot is a friendly chatbot that is here to assist you.")
 
-    if st.button("Logout"):
-        st.session_state.authenticated = False
-        st.session_state.signout = False
-        st.session_state.signedout = False
-        st.session_state.username = ""
-        st.session_state.useremail = ""
-        st.session_state.messages = []
-        st.session_state.message_history = []
-        st.rerun()
+    col1, col2 = st.columns(2)
+
+    with col1:
+        if st.button("Clear Chat", icon=":material/delete_sweep:"):
+            clear_chat()
+
+    with col2:
+        if st.button("Logout", icon=":material/logout:"):
+            st.session_state.authenticated = False
+            st.session_state.signout = False
+            st.session_state.signedout = False
+            st.session_state.username = ""
+            st.session_state.useremail = ""
+            st.session_state.messages = []
+            st.session_state.message_history = []
+            st.rerun()
 
     display_chat_messages()
     handle_user_input()
