@@ -7,6 +7,6 @@ app = FastAPI()
 
 
 @app.post("/chat", response_model=ChatResponse)
-async def joke_chat(request: ChatRequest) -> ChatResponse:
+async def chatbot_chat(request: ChatRequest) -> ChatResponse:
     chat_response = await chat(request)
     return chat_response
