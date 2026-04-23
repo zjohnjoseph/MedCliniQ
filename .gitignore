@@ -8,4 +8,5 @@ wheels/
 
 # Virtual environments
 .venv
+.env
 src/chatbot-auth-76288-e79bafae551e.json
