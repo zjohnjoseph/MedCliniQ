@@ -212,7 +212,7 @@ def speak_text(text: str):
 
 
 def handle_user_input():
-    if prompt := st.chat_input("Hi, how can I help you?"):
+    if prompt := st.chat_input("Hi, I am Chatbot"):
         st.session_state.messages.append({"role": "user", "content": prompt})
 
         with st.chat_message("user"):
@@ -225,7 +225,7 @@ def handle_user_input():
                     "question": prompt,
                     "message_history": st.session_state.message_history,
                 },
-                timeout=300.0,
+                timeout=120.0,
             )
             api_response.raise_for_status()
             api_data = api_response.json()
