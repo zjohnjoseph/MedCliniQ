@@ -7,6 +7,10 @@ wheels/
 *.egg-info
 
 # Virtual environments
-.venv
+.venv/
 .env
-src/chatbot-auth-76288-e79bafae551e.json
+.cursor/
+
+src/chatbot-auth*
+
+test_firestore.py

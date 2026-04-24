@@ -1,13 +1,11 @@
 import streamlit as st
-import firebase_admin
 from firebase_admin import firestore
-from firebase_admin import credentials
 from firebase_admin import auth
 import json
 import requests
+from firebase_init import init_firebase
 
-
-cred = credentials.Certificate("src\\chatbot-auth-76288-e79bafae551e.json")
+init_firebase()
 
 def app():
     _, center, _ = st.columns([1, 2, 1])
@@ -76,6 +74,7 @@ def app():
                     return {
                         "email": data["email"],
                         "username": data.get("displayName"),
+                        "user_id": data.get("localId"),
                     }
                 except:
                     st.warning(data)
@@ -134,6 +133,7 @@ def app():
                     if userinfo:
                         st.session_state.username = userinfo["username"]
                         st.session_state.useremail = userinfo["email"]
+                        st.session_state.user_id = userinfo["user_id"]
                         st.session_state.email_input = email
                         st.session_state.password_input = password
                         st.session_state.authenticated = True
