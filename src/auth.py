@@ -69,15 +69,14 @@ def app():
                     params={"key": "REMOVED"},
                     data=payload,
                 )
-                try:
-                    data = r.json()
-                    return {
-                        "email": data["email"],
-                        "username": data.get("displayName"),
-                        "user_id": data.get("localId"),
-                    }
-                except:
-                    st.warning(data)
+                data = r.json()
+                if "error" in data:
+                    return None
+                return {
+                    "email": data["email"],
+                    "username": data.get("displayName"),
+                    "user_id": data.get("localId"),
+                }
             except Exception as e:
                 st.warning(f"Signin failed: {e}")
 
