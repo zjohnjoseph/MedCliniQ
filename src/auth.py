@@ -1,11 +1,20 @@
-import streamlit as st
-from firebase_admin import firestore
-from firebase_admin import auth
 import json
+
 import requests
+import streamlit as st
+
+from constants import FIREBASE_WEB_API_KEY
 from firebase_init import init_firebase
 
 init_firebase()
+
+
+def _firebase_auth_post(url: str, **kwargs):
+    if not FIREBASE_WEB_API_KEY:
+        raise ValueError("FIREBASE_WEB_API_KEY is missing in .env")
+    params = kwargs.pop("params", {})
+    params["key"] = FIREBASE_WEB_API_KEY
+    return requests.post(url, params=params, **kwargs)
 
 def app():
     _, center, _ = st.columns([1, 2, 1])
@@ -40,11 +49,7 @@ def app():
                 }
                 if username:
                     payload["displayName"] = username
-                r = requests.post(
-                    rest_api_url,
-                    params={"key": "REMOVED"},
-                    json=payload,
-                )
+                r = _firebase_auth_post(rest_api_url, json=payload)
                 data = r.json()
                 if r.status_code == 200:
                     return data.get("email")
@@ -64,11 +69,7 @@ def app():
                 if password:
                     payload["password"] = password
                 payload = json.dumps(payload)
-                r = requests.post(
-                    rest_api_url,
-                    params={"key": "REMOVED"},
-                    data=payload,
-                )
+                r = _firebase_auth_post(rest_api_url, data=payload)
                 data = r.json()
                 if "error" in data:
                     return None
@@ -84,11 +85,7 @@ def app():
             try:
                 rest_api_url = "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode"
                 payload = json.dumps({"email": email, "requestType": "PASSWORD_RESET"})
-                r = requests.post(
-                    rest_api_url,
-                    params={"key": "REMOVED"},
-                    data=payload,
-                )
+                r = _firebase_auth_post(rest_api_url, data=payload)
                 if r.status_code == 200:
                     return True, "Reset email sent"
                 else:

@@ -132,6 +132,7 @@ Create a `.env` file in the project root:
 ```env
 HF_TOKEN=your_huggingface_token
 HF_ENDPOINT_URL=https://your-endpoint.endpoints.huggingface.cloud
+FIREBASE_WEB_API_KEY=your_firebase_web_api_key
 
 # Optional generation parameters (defaults shown)
 MAX_NEW_TOKENS=512
@@ -141,9 +142,10 @@ TOP_P=0.9
 
 ### 4. Add Firebase credentials
 
-1. In the Firebase console, go to **Project settings → Service accounts → Generate new private key**.
-2. Save the JSON file under `src/` and update the path in `firebase_init.py` if the filename differs.
-3. Files matching `src/chatbot-auth*` are gitignored — do not commit service account keys.
+1. In the Firebase console, go to **Project settings → General** and copy the **Web API Key** into `FIREBASE_WEB_API_KEY` in `.env`.
+2. Go to **Project settings → Service accounts → Generate new private key**.
+3. Save the JSON file under `src/` and update the path in `firebase_init.py` if the filename differs.
+4. Files matching `src/chatbot-auth*` are gitignored — do not commit service account keys.
 
 Ensure Email/Password sign-in is enabled under **Authentication → Sign-in method**.
 
