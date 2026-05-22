@@ -104,7 +104,6 @@ Streamlit (frontend.py)  →  FastAPI (api.py)  →  Hugging Face Endpoint
 │   ├── constants.py        # Environment variable loading
 │   └── data_models.py      # Pydantic request/response models
 ├── requirements.txt
-├── pyproject.toml
 ```
 
 ## Setup
@@ -124,12 +123,6 @@ python -m venv .venv
 # source .venv/bin/activate   # macOS / Linux
 
 pip install -r requirements.txt
-```
-
-Or with [uv](https://github.com/astral-sh/uv):
-
-```bash
-uv sync
 ```
 
 ### 3. Configure environment variables
