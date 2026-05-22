@@ -97,6 +97,10 @@ def clean_response(text: str, prompt: str) -> str:
         "**please provide the assistant's next reply.**",
         "user:",
         "model:",
+        "medcliniq's response:",
+        "medcliniq:",
+        "**medcliniq's response:**",
+        "**medcliniq:**",
     ]
 
     changed = True

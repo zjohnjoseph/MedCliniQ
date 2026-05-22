@@ -14,3 +14,5 @@ wheels/
 src/chatbot-auth*
 
 test_firestore.py
+
+Notes.txt
